@@ -34,6 +34,11 @@ _REASONS = {
 # would otherwise let an unauthenticated client exhaust the Pico's tiny RAM.
 _MAX_BODY = 1024
 
+# Drop a client that can't send a complete request within this many seconds. Without it a
+# slow or never-finishing connection (slowloris) could hold one of the Pico's very few
+# sockets open indefinitely; a handful would exhaust them and block legitimate wakes.
+_READ_TIMEOUT_S = 5
+
 
 def _is_private(ip):
     """True for RFC1918 / loopback source addresses. Keeps /log LAN-only so a
@@ -69,25 +74,25 @@ class HttpServer:
 
     async def _handle(self, reader, writer):
         try:
-            request_line = await reader.readline()
-            if not request_line:
-                return
-            parts = request_line.decode().split()
-            if len(parts) < 2:
+            # Bound the time spent reading the request so a slow or incomplete client can't
+            # pin one of the Pico's scarce sockets open (slowloris / socket exhaustion).
+            try:
+                parsed = await asyncio.wait_for(self._read_request(reader), _READ_TIMEOUT_S)
+            except asyncio.TimeoutError:
+                return  # drop the connection; the finally-block closes it
+
+            if parsed is None:
+                return  # peer connected but sent nothing
+            method, path, body = parsed
+            if not method:
                 await self._send(writer, 400, {"ok": False, "err": "bad_request"})
                 return
-            method, raw_path = parts[0], parts[1]
-            path = raw_path.split("?", 1)[0]
-
-            content_length = await self._read_headers(reader)
 
             if path == "/ping" and method == "GET":
                 await self._ping(writer)
             elif path == "/wake" and method == "POST":
-                body = await self._read_body(reader, content_length)
                 await self._wake(writer, body)
             elif path == "/verify" and method == "POST":
-                body = await self._read_body(reader, content_length)
                 await self._verify(writer, body)
             elif path == "/log" and method == "GET":
                 peer = writer.get_extra_info("peername")
@@ -104,6 +109,25 @@ class HttpServer:
                 pass
         finally:
             await self._close(writer)
+
+    async def _read_request(self, reader):
+        """Read the request line, headers, and (for POST) the body.
+
+        Returns ``(method, path, body)``. Returns ``None`` if the peer sent nothing, and
+        ``("", "", b"")`` for a malformed request line so the caller can answer 400. All of
+        the blocking reads live here so [_handle] can wrap them in a single timeout.
+        """
+        request_line = await reader.readline()
+        if not request_line:
+            return None
+        parts = request_line.decode().split()
+        if len(parts) < 2:
+            return "", "", b""
+        method, raw_path = parts[0], parts[1]
+        path = raw_path.split("?", 1)[0]
+        content_length = await self._read_headers(reader)
+        body = await self._read_body(reader, content_length) if method == "POST" else b""
+        return method, path, body
 
     @staticmethod
     async def _read_headers(reader):
