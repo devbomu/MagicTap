@@ -1,27 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Adaptive-icon foreground: the white power ring, the golden lightning bolt in its gap, a
-  warm energy glow, and four sparkles. Transcribed from assets/magictap_icon.svg (1024 art
-  scaled into the 108 canvas). The ring + bolt sit inside a translate(0,12) group exactly as
-  in the source; sparkles sit in the corners.
+  Self-contained app badge for in-app use (top bar, about screen): the full MagicTap mark
+  on its brand squircle. Same art as the launcher icon, clipped to a rounded square so it
+  can be dropped straight into an Image. Authored at 1024; size it down in Compose.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <group
-        android:scaleX="0.10546875"
-        android:scaleY="0.10546875">
-        <!-- Inset the mark toward the centre so it sits with comfortable margin (matching
-             the in-app header logo's proportion) instead of filling the whole tile. -->
-        <group android:scaleX="0.8" android:scaleY="0.8" android:pivotX="512" android:pivotY="512">
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="1024"
+    android:viewportHeight="1024">
 
-        <!-- ring + bolt + warm glow (shifted down 12, matching the source) -->
+    <group>
+        <clip-path android:pathData="M232,0 L792,0 A232,232 0 0 1 1024,232 L1024,792 A232,232 0 0 1 792,1024 L232,1024 A232,232 0 0 1 0,792 L0,232 A232,232 0 0 1 232,0 Z" />
+
+        <!-- Base diagonal brand gradient -->
+        <path android:pathData="M0,0h1024v1024h-1024z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="linear"
+                    android:startX="0" android:startY="0"
+                    android:endX="1024" android:endY="1024">
+                    <item android:offset="0.0" android:color="#FF5B4BF5" />
+                    <item android:offset="0.36" android:color="#FF8B4CF0" />
+                    <item android:offset="0.70" android:color="#FFC24AE0" />
+                    <item android:offset="1.0" android:color="#FFFF5C93" />
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- Top-left highlight -->
+        <path android:pathData="M0,0h1024v1024h-1024z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="radial"
+                    android:centerX="266" android:centerY="205"
+                    android:gradientRadius="737">
+                    <item android:offset="0.0" android:color="#4DFFFFFF" />
+                    <item android:offset="0.55" android:color="#0FFFFFFF" />
+                    <item android:offset="1.0" android:color="#00FFFFFF" />
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- Bottom-right shade -->
+        <path android:pathData="M0,0h1024v1024h-1024z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="radial"
+                    android:centerX="819" android:centerY="963"
+                    android:gradientRadius="737">
+                    <item android:offset="0.0" android:color="#523A1A63" />
+                    <item android:offset="1.0" android:color="#003A1A63" />
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- ring + bolt + warm glow -->
         <group android:translateY="12">
-
-            <!-- warm energy glow behind the mark -->
             <path android:pathData="M192,420 a320,320 0 1 0 640,0 a320,320 0 1 0 -640,0 Z">
                 <aapt:attr name="android:fillColor">
                     <gradient
@@ -34,8 +70,6 @@
                     </gradient>
                 </aapt:attr>
             </path>
-
-            <!-- power ring: ~300° arc, gap at the top -->
             <path
                 android:pathData="M637,303.5 A250,250 0 1 1 387,303.5"
                 android:strokeWidth="78"
@@ -51,8 +85,6 @@
                     </gradient>
                 </aapt:attr>
             </path>
-
-            <!-- lightning bolt entering the ring through the gap -->
             <path
                 android:pathData="M546,206 L452,392 L508,392 L474,546 L572,362 L518,362 Z"
                 android:strokeWidth="30"
@@ -94,6 +126,5 @@
         <path
             android:fillColor="#57FFFFFF"
             android:pathData="M258,812 Q262,816 282,820 Q262,824 258,844 Q254,824 234,820 Q254,816 258,812 Z" />
-        </group>
     </group>
 </vector>

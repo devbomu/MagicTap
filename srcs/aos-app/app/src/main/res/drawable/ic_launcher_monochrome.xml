@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Themed-icon (monochrome) layer: a clean power-ring + bolt silhouette. The launcher tints
+  this to match the user's system theme, so it is a single flat colour (white here).
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.10546875"
+        android:scaleY="0.10546875">
+        <!-- Same inset as the foreground so the themed icon matches. -->
+        <group android:scaleX="0.8" android:scaleY="0.8" android:pivotX="512" android:pivotY="512">
+            <group android:translateY="12">
+                <path
+                    android:pathData="M637,303.5 A250,250 0 1 1 387,303.5"
+                    android:strokeColor="#FFFFFFFF"
+                    android:strokeWidth="78"
+                    android:strokeLineCap="round" />
+                <path
+                    android:fillColor="#FFFFFFFF"
+                    android:strokeColor="#FFFFFFFF"
+                    android:strokeWidth="30"
+                    android:strokeLineJoin="round"
+                    android:strokeLineCap="round"
+                    android:pathData="M546,206 L452,392 L508,392 L474,546 L572,362 L518,362 Z" />
+            </group>
+        </group>
+    </group>
+</vector>

@@ -44,9 +44,6 @@ class ListWidgetConfigActivity : ComponentActivity() {
     }
 
     private fun save(profileId: String) {
-        // Use the application context: the per-widget Glance DataStore must outlive this
-        // activity, which finish()es immediately after. Writing through an activity context
-        // is the usual culprit when a configured widget still reads empty state.
         val ctx = applicationContext
         lifecycleScope.launch {
             val glanceId = GlanceAppWidgetManager(ctx).getGlanceIdBy(appWidgetId)
@@ -55,7 +52,6 @@ class ListWidgetConfigActivity : ComponentActivity() {
                 prefs.remove(WidgetKeys.PC_ID)
             }
             ListWidget().update(ctx, glanceId)
-            android.util.Log.i("MagicTapWidget", "list saved: appWidgetId=$appWidgetId glanceId=$glanceId profileId=$profileId")
             setResult(RESULT_OK, resultIntent())
             finish()
         }

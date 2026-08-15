@@ -6,6 +6,7 @@ import android.content.ContextWrapper
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -85,117 +86,119 @@ fun ProfileEditScreen(
     // The secret is visible on this screen — block screenshots / recents thumbnails (§8).
     SecureScreenEffect()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        stringResource(
-                            if (state.isNew) R.string.profile_edit_title_new else R.string.profile_edit_title_edit,
-                        ),
+    Box(Modifier.fillMaxSize()) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            stringResource(
+                                if (state.isNew) R.string.profile_edit_title_new else R.string.profile_edit_title_edit,
+                            ),
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onDone) {
+                            Icon(AppIcons.Close, contentDescription = stringResource(R.string.action_cancel))
+                        }
+                    },
+                )
+            },
+            bottomBar = {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .imePadding()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    SecondaryButton(
+                        text = stringResource(R.string.action_cancel),
+                        icon = AppIcons.Close,
+                        onClick = onDone,
+                        modifier = Modifier.weight(1f),
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onDone) {
-                        Icon(AppIcons.Close, contentDescription = stringResource(R.string.action_cancel))
-                    }
-                },
-            )
-        },
-        bottomBar = {
-            Row(
+                    PrimaryButton(
+                        text = stringResource(R.string.action_save),
+                        icon = AppIcons.Check,
+                        onClick = { viewModel.save(onDone) },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+            },
+        ) { padding ->
+            Column(
                 Modifier
-                    .fillMaxWidth()
-                    .navigationBarsPadding()
-                    .imePadding()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = 16.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
+                Spacer(Modifier.height(2.dp))
+                LabeledField(
+                    value = state.alias,
+                    onValueChange = viewModel::updateAlias,
+                    label = stringResource(R.string.profile_alias),
+                    placeholder = stringResource(R.string.profile_alias_hint),
+                    error = state.aliasError?.let { stringResource(it) },
+                )
+                LabeledField(
+                    value = state.internalHost,
+                    onValueChange = viewModel::updateInternalHost,
+                    label = stringResource(R.string.profile_internal_host),
+                    placeholder = stringResource(R.string.profile_internal_host_hint),
+                    error = state.hostError?.let { stringResource(it) },
+                    keyboardType = KeyboardType.Uri,
+                )
+                LabeledField(
+                    value = state.externalHost,
+                    onValueChange = viewModel::updateExternalHost,
+                    label = stringResource(R.string.profile_external_host),
+                    placeholder = stringResource(R.string.profile_external_host_hint),
+                    keyboardType = KeyboardType.Uri,
+                )
+                LabeledField(
+                    value = state.externalPort,
+                    onValueChange = viewModel::updateExternalPort,
+                    label = stringResource(R.string.profile_external_port),
+                    placeholder = stringResource(R.string.profile_external_port_hint),
+                    error = state.portError?.let { stringResource(it) },
+                    keyboardType = KeyboardType.Number,
+                )
+
+                SecretField(
+                    secret = state.secret,
+                    onCopy = {
+                        clipboard.setText(AnnotatedString(state.secret))
+                        Toast.makeText(context, R.string.profile_secret_copied, Toast.LENGTH_SHORT).show()
+                    },
+                    onRegenerate = viewModel::regenerateSecret,
+                )
+
+                ConnectionTestSection(
+                    internal = state.internalTest,
+                    external = state.externalTest,
+                    onTest = viewModel::runConnectionTest,
+                )
                 SecondaryButton(
-                    text = stringResource(R.string.action_cancel),
-                    icon = AppIcons.Close,
-                    onClick = onDone,
-                    modifier = Modifier.weight(1f),
+                    text = stringResource(R.string.profile_pico_setup),
+                    icon = AppIcons.Download,
+                    onClick = { showPicoConfig = true },
+                    modifier = Modifier.fillMaxWidth(),
                 )
-                PrimaryButton(
-                    text = stringResource(R.string.action_save),
-                    icon = AppIcons.Check,
-                    onClick = { viewModel.save(onDone) },
-                    modifier = Modifier.weight(1f),
-                )
+                Spacer(Modifier.height(8.dp))
             }
-        },
-    ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
-        ) {
-            Spacer(Modifier.height(2.dp))
-            LabeledField(
-                value = state.alias,
-                onValueChange = viewModel::updateAlias,
-                label = stringResource(R.string.profile_alias),
-                placeholder = stringResource(R.string.profile_alias_hint),
-                error = state.aliasError?.let { stringResource(it) },
-            )
-            LabeledField(
-                value = state.internalHost,
-                onValueChange = viewModel::updateInternalHost,
-                label = stringResource(R.string.profile_internal_host),
-                placeholder = stringResource(R.string.profile_internal_host_hint),
-                error = state.hostError?.let { stringResource(it) },
-                keyboardType = KeyboardType.Uri,
-            )
-            LabeledField(
-                value = state.externalHost,
-                onValueChange = viewModel::updateExternalHost,
-                label = stringResource(R.string.profile_external_host),
-                placeholder = stringResource(R.string.profile_external_host_hint),
-                keyboardType = KeyboardType.Uri,
-            )
-            LabeledField(
-                value = state.externalPort,
-                onValueChange = viewModel::updateExternalPort,
-                label = stringResource(R.string.profile_external_port),
-                placeholder = stringResource(R.string.profile_external_port_hint),
-                error = state.portError?.let { stringResource(it) },
-                keyboardType = KeyboardType.Number,
-            )
-
-            SecretField(
-                secret = state.secret,
-                onCopy = {
-                    clipboard.setText(AnnotatedString(state.secret))
-                    Toast.makeText(context, R.string.profile_secret_copied, Toast.LENGTH_SHORT).show()
-                },
-                onRegenerate = viewModel::regenerateSecret,
-            )
-
-            ConnectionTestSection(
-                internal = state.internalTest,
-                external = state.externalTest,
-                onTest = viewModel::runConnectionTest,
-            )
-            SecondaryButton(
-                text = stringResource(R.string.profile_pico_setup),
-                icon = AppIcons.Download,
-                onClick = { showPicoConfig = true },
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(Modifier.height(8.dp))
         }
-    }
 
-    if (showPicoConfig) {
-        PicoConfigDialog(
-            secret = state.secret,
-            defaultStaticIp = state.internalHost,
-            onDismiss = { showPicoConfig = false },
-        )
+        if (showPicoConfig) {
+            PicoConfigDialog(
+                secret = state.secret,
+                defaultStaticIp = state.internalHost,
+                onDismiss = { showPicoConfig = false },
+            )
+        }
     }
 }
 

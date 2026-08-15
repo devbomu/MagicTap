@@ -10,6 +10,7 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.ColorFilter
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
@@ -18,8 +19,9 @@ import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.lazy.items
 import androidx.glance.appwidget.provideContent
-import androidx.glance.appwidget.state.getAppWidgetState
+import androidx.glance.currentState
 import androidx.glance.background
+import androidx.glance.unit.ColorProvider
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
@@ -30,7 +32,7 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
-import androidx.glance.state.PreferencesGlanceStateDefinition
+import androidx.datastore.preferences.core.Preferences
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -43,14 +45,13 @@ import com.magictap.data.model.Profile
 class ListWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val prefs = getAppWidgetState(context, PreferencesGlanceStateDefinition, id)
-        val profileId = prefs[WidgetKeys.PROFILE_ID]
-        val profile = profileId?.let { pid ->
-            context.appContainer.repository.current().profiles.firstOrNull { it.id == pid }
-        }
-        android.util.Log.i("MagicTapWidget", "list render: id=$id profileId=$profileId found=${profile != null}")
+        // Load the document once; the selection is read reactively below so the widget
+        // recomposes the instant the configuration activity writes its state.
+        val data = context.appContainer.repository.current()
         provideContent {
-            GlanceTheme {
+            val profileId = currentState<Preferences>()?.get(WidgetKeys.PROFILE_ID)
+            val profile = profileId?.let { pid -> data.profiles.firstOrNull { it.id == pid } }
+            GlanceTheme(colors = MagicTapGlanceColors) {
                 ListContent(context, profile)
             }
         }
@@ -65,7 +66,7 @@ class ListWidgetReceiver : GlanceAppWidgetReceiver() {
 private fun ListContent(context: Context, profile: Profile?) {
     val container = GlanceModifier
         .fillMaxSize()
-        .background(GlanceTheme.colors.widgetBackground)
+        .background(WidgetSurface)
         .cornerRadius(16.dp)
         .padding(10.dp)
 
@@ -78,7 +79,7 @@ private fun ListContent(context: Context, profile: Profile?) {
         ) {
             Text(
                 context.getString(R.string.widget_not_configured),
-                style = TextStyle(color = GlanceTheme.colors.onSurfaceVariant, fontSize = 12.sp),
+                style = TextStyle(color = ColorProvider(WidgetOnSurfaceMuted), fontSize = 12.sp),
             )
         }
         return
@@ -87,14 +88,15 @@ private fun ListContent(context: Context, profile: Profile?) {
     Column(modifier = container) {
         Text(
             profile.alias,
-            style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = 14.sp, fontWeight = FontWeight.Bold),
-            modifier = GlanceModifier.padding(start = 4.dp, bottom = 6.dp),
+            style = TextStyle(color = ColorProvider(WidgetOnSurface), fontSize = 15.sp, fontWeight = FontWeight.Bold),
+            maxLines = 1,
+            modifier = GlanceModifier.padding(start = 6.dp, bottom = 10.dp),
         )
         if (profile.pcs.isEmpty()) {
             Text(
                 context.getString(R.string.widget_empty),
-                style = TextStyle(color = GlanceTheme.colors.onSurfaceVariant, fontSize = 12.sp),
-                modifier = GlanceModifier.padding(4.dp),
+                style = TextStyle(color = ColorProvider(WidgetOnSurfaceMuted), fontSize = 12.sp),
+                modifier = GlanceModifier.padding(6.dp),
             )
         } else {
             LazyColumn(modifier = GlanceModifier.fillMaxWidth().defaultWeight()) {
@@ -109,32 +111,44 @@ private fun ListContent(context: Context, profile: Profile?) {
 
 @Composable
 private fun PcWidgetRow(context: Context, profileId: String, pcId: String, alias: String) {
-    Row(
-        modifier = GlanceModifier
-            .fillMaxWidth()
-            .padding(bottom = 6.dp)
-            .background(GlanceTheme.colors.secondaryContainer)
-            .cornerRadius(12.dp)
-            .clickable(actionStartActivity(WidgetIntents.confirm(context, profileId, pcId)))
-            .padding(horizontal = 8.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Box(
-            modifier = GlanceModifier.size(28.dp).background(GlanceTheme.colors.primary).cornerRadius(14.dp),
-            contentAlignment = Alignment.Center,
+    // The outer bottom padding is the real gap between cards: it sits OUTSIDE the card's
+    // background. (A padding applied *before* background() gets covered by the fill, which
+    // is why the previous rows looked glued together.)
+    Box(GlanceModifier.fillMaxWidth().padding(bottom = 8.dp)) {
+        Row(
+            modifier = GlanceModifier
+                .fillMaxWidth()
+                .background(WidgetCard)
+                .cornerRadius(18.dp)
+                .clickable(actionStartActivity(WidgetIntents.confirm(context, profileId, pcId)))
+                .padding(horizontal = 10.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Image(
-                provider = ImageProvider(R.drawable.ic_widget_power),
-                contentDescription = null,
-                modifier = GlanceModifier.size(16.dp),
+            Box(
+                modifier = GlanceModifier
+                    .size(34.dp)
+                    .background(WidgetAccent)
+                    .cornerRadius(17.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Image(
+                    provider = ImageProvider(R.drawable.ic_widget_power),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(ColorProvider(WidgetOnAccent)),
+                    modifier = GlanceModifier.size(18.dp),
+                )
+            }
+            Spacer(GlanceModifier.width(12.dp))
+            Text(
+                alias,
+                style = TextStyle(
+                    color = ColorProvider(WidgetOnCard),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
+                maxLines = 1,
+                modifier = GlanceModifier.defaultWeight(),
             )
         }
-        Spacer(GlanceModifier.width(10.dp))
-        Text(
-            alias,
-            style = TextStyle(color = GlanceTheme.colors.onSecondaryContainer, fontSize = 14.sp, fontWeight = FontWeight.Medium),
-            maxLines = 1,
-            modifier = GlanceModifier.defaultWeight(),
-        )
     }
 }

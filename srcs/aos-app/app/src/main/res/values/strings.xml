@@ -79,7 +79,8 @@
     <string name="delete_pc_message">%1$s를 삭제할까요?</string>
 
     <!-- Confirm activity (widget tap) -->
-    <string name="confirm_message">%1$s를 켤까요?</string>
+    <string name="confirm_title">전원 켜기</string>
+    <string name="confirm_message">다음 PC의 전원을 켭니다\n\n%1$s › %2$s</string>
     <string name="confirm_wake">켜기</string>
 
     <!-- Settings -->
@@ -92,7 +93,8 @@
     <string name="settings_import">정보 가져오기</string>
     <string name="settings_import_desc">백업 파일에서 설정을 복원합니다.</string>
     <string name="settings_source_title">오픈소스</string>
-    <string name="settings_source_body">MagicTap은 오픈소스입니다. github.com/devbomu/MagicTap</string>
+    <string name="settings_source_body">MagicTap은 오픈소스입니다.</string>
+    <string name="settings_source_link">github.com/devbomu/MagicTap</string>
 
     <!-- Export -->
     <string name="export_warning_title">내보내기 주의</string>

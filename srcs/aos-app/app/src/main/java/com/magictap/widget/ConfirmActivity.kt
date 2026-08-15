@@ -61,7 +61,8 @@ class ConfirmActivity : ComponentActivity() {
                 target?.let { (profile, pc) ->
                     AlertDialog(
                         onDismissRequest = { if (!sending) finish() },
-                        title = { Text(getString(R.string.confirm_message, pc.alias)) },
+                        title = { Text(getString(R.string.confirm_title)) },
+                        text = { Text(getString(R.string.confirm_message, profile.alias, pc.alias)) },
                         confirmButton = {
                             TextButton(
                                 enabled = !sending,

@@ -43,9 +43,6 @@ class SingleWidgetConfigActivity : ComponentActivity() {
     }
 
     private fun save(profileId: String, pcId: String) {
-        // Application context: the per-widget Glance DataStore must outlive this activity
-        // (which finish()es right after). Writing via an activity context is the usual
-        // reason a configured widget still reads empty state.
         val ctx = applicationContext
         lifecycleScope.launch {
             val glanceId = GlanceAppWidgetManager(ctx).getGlanceIdBy(appWidgetId)
@@ -54,7 +51,6 @@ class SingleWidgetConfigActivity : ComponentActivity() {
                 prefs[WidgetKeys.PC_ID] = pcId
             }
             SingleWidget().update(ctx, glanceId)
-            android.util.Log.i("MagicTapWidget", "single saved: appWidgetId=$appWidgetId glanceId=$glanceId profileId=$profileId pcId=$pcId")
             setResult(RESULT_OK, resultIntent())
             finish()
         }

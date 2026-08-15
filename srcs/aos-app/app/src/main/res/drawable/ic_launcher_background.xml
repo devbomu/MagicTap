@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Adaptive-icon background: the brand squircle gradient (indigo → violet → magenta →
+  pink) with a soft top highlight and a bottom shade, transcribed from assets/magictap_icon.svg.
+  Source art is authored at 1024×1024; the wrapping group scales it into the 108 canvas.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.10546875"
+        android:scaleY="0.10546875">
+
+        <!-- Base diagonal brand gradient -->
+        <path android:pathData="M0,0h1024v1024h-1024z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="linear"
+                    android:startX="0" android:startY="0"
+                    android:endX="1024" android:endY="1024">
+                    <item android:offset="0.0" android:color="#FF5B4BF5" />
+                    <item android:offset="0.36" android:color="#FF8B4CF0" />
+                    <item android:offset="0.70" android:color="#FFC24AE0" />
+                    <item android:offset="1.0" android:color="#FFFF5C93" />
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- Top-left highlight -->
+        <path android:pathData="M0,0h1024v1024h-1024z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="radial"
+                    android:centerX="266" android:centerY="205"
+                    android:gradientRadius="737">
+                    <item android:offset="0.0" android:color="#4DFFFFFF" />
+                    <item android:offset="0.55" android:color="#0FFFFFFF" />
+                    <item android:offset="1.0" android:color="#00FFFFFF" />
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- Bottom-right shade -->
+        <path android:pathData="M0,0h1024v1024h-1024z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="radial"
+                    android:centerX="819" android:centerY="963"
+                    android:gradientRadius="737">
+                    <item android:offset="0.0" android:color="#523A1A63" />
+                    <item android:offset="1.0" android:color="#003A1A63" />
+                </gradient>
+            </aapt:attr>
+        </path>
+    </group>
+</vector>

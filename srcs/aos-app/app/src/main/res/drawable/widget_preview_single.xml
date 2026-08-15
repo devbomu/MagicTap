@@ -5,7 +5,7 @@
     android:viewportHeight="72">
     <!-- Rounded brand tile -->
     <path
-        android:fillColor="#4C6FFF"
+        android:fillColor="#FFFFFF"
         android:pathData="M16,2 L56,2 A14,14 0 0 1 70,16 L70,56 A14,14 0 0 1 56,70 L16,70 A14,14 0 0 1 2,56 L2,16 A14,14 0 0 1 16,2 Z" />
     <!-- Power glyph centred -->
     <group
@@ -14,7 +14,7 @@
         android:translateX="16.8"
         android:translateY="16.8">
         <path
-            android:fillColor="#FFFFFF"
+            android:fillColor="#6D34E6"
             android:pathData="M13,3h-2v10h2V3z M17.83,5.17l-1.42,1.42C17.99,7.86 19,9.81 19,12c0,3.87 -3.13,7 -7,7s-7,-3.13 -7,-7c0,-2.19 1.01,-4.14 2.58,-5.42L6.17,5.17C4.23,6.82 3,9.26 3,12c0,4.97 4.03,9 9,9s9,-4.03 9,-9C21,9.26 19.77,6.82 17.83,5.17z" />
     </group>
 </vector>

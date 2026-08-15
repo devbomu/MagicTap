@@ -20,6 +20,9 @@ import kotlinx.coroutines.launch
 class AppContainer(context: Context) {
     private val appContext = context.applicationContext
 
+    // A process-lived scope (survives finishing activities), used to refresh widgets.
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
     val store: SecureStore = SecureStore(appContext)
     val repository: WolRepository = WolRepository(store)
     val wolClient: WolClient = WolClient()
@@ -27,13 +30,15 @@ class AppContainer(context: Context) {
     init {
         // Refresh any placed widgets whenever the document changes (PC added, alias
         // edited, imported…). drop(1) skips the initial empty-state replay.
-        CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
-            repository.data.drop(1).collect {
-                runCatching {
-                    ListWidget().updateAll(appContext)
-                    SingleWidget().updateAll(appContext)
-                }
-            }
+        scope.launch {
+            repository.data.drop(1).collect { refreshWidgets() }
+        }
+    }
+
+    private suspend fun refreshWidgets() {
+        runCatching {
+            ListWidget().updateAll(appContext)
+            SingleWidget().updateAll(appContext)
         }
     }
 }

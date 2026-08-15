@@ -77,6 +77,7 @@ import com.magictap.ui.components.EmptyState
 import com.magictap.ui.pressScale
 import com.magictap.ui.rememberHaptics
 import com.magictap.ui.theme.BrandGradient
+import com.magictap.ui.theme.brandWash
 import com.magictap.ui.toUiMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -139,6 +140,7 @@ fun MainScreen(
         Box(
             Modifier
                 .fillMaxSize()
+                .brandWash()
                 .padding(padding),
         ) {
             when {

@@ -31,3 +31,9 @@ venv/
 # ---- IDE ----
 .vscode/
 *.swp
+
+# ---- Design source (not used by the build) ----
+# The launcher/in-app icons are the vector drawables committed under
+# srcs/aos-app/app/src/main/res/ — those are the source of truth. This folder only holds
+# the original logo art (SVG master + preview PNGs), which the build never reads.
+assets/
