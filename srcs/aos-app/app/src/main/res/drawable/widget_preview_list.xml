@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="144dp"
+    android:height="96dp"
+    android:viewportWidth="144"
+    android:viewportHeight="96">
+    <!-- Card -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,4 L132,4 A10,10 0 0 1 142,14 L142,82 A10,10 0 0 1 132,92 L12,92 A10,10 0 0 1 2,82 L2,14 A10,10 0 0 1 12,4 Z" />
+    <!-- Row 1 -->
+    <path android:fillColor="#E7EAF2" android:pathData="M14,18 L96,18 A5,5 0 0 1 101,23 L101,29 A5,5 0 0 1 96,34 L14,34 A5,5 0 0 1 9,29 L9,23 A5,5 0 0 1 14,18 Z" />
+    <path android:fillColor="#4C6FFF" android:pathData="M126,18 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0" />
+    <!-- Row 2 -->
+    <path android:fillColor="#E7EAF2" android:pathData="M14,44 L84,44 A5,5 0 0 1 89,49 L89,55 A5,5 0 0 1 84,60 L14,60 A5,5 0 0 1 9,55 L9,49 A5,5 0 0 1 14,44 Z" />
+    <path android:fillColor="#4C6FFF" android:pathData="M126,44 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0" />
+    <!-- Row 3 -->
+    <path android:fillColor="#E7EAF2" android:pathData="M14,70 L92,70 A5,5 0 0 1 97,75 L97,81 A5,5 0 0 1 92,86 L14,86 A5,5 0 0 1 9,81 L9,75 A5,5 0 0 1 14,70 Z" />
+    <path android:fillColor="#4C6FFF" android:pathData="M126,70 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0" />
+</vector>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Legacy (pre-API 31) auto-backup rules. Superseded by data_extraction_rules
+     on the minSdk-31 targets, but referenced for completeness. Backup is off
+     entirely via android:allowBackup="false". -->
+<full-backup-content>
+    <exclude domain="file" />
+    <exclude domain="sharedpref" />
+    <exclude domain="database" />
+</full-backup-content>

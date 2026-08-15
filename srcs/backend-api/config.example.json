@@ -1,0 +1,18 @@
+{
+  "wifi_ssid": "YOUR_WIFI_SSID",
+  "wifi_pass": "YOUR_WIFI_PASSWORD",
+
+  "static_ip": "192.168.35.50",
+  "subnet": "255.255.255.0",
+  "gateway": "192.168.35.1",
+  "dns": "8.8.8.8",
+
+  "http_port": 80,
+
+  "secret": "PASTE_BASE64_SECRET_FROM_THE_APP",
+
+  "duckdns_domain": "",
+  "duckdns_token": "",
+
+  "ntp_host": "pool.ntp.org"
+}

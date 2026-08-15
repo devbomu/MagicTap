@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand -->
+    <color name="brand">#4C6FFF</color>
+    <color name="brand_dark">#3350D6</color>
+
+    <!-- Window background (light). Dark variant in values-night. -->
+    <color name="window_background">#FDFCFF</color>
+
+    <!-- Adaptive launcher icon -->
+    <color name="ic_launcher_background">#101426</color>
+</resources>

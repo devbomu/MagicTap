@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MagicTap</string>
+
+    <!-- Common actions -->
+    <string name="action_cancel">취소</string>
+    <string name="action_save">저장</string>
+    <string name="action_delete">삭제</string>
+    <string name="action_edit">수정</string>
+    <string name="action_close">닫기</string>
+    <string name="action_ok">확인</string>
+    <string name="action_back">뒤로</string>
+
+    <!-- Main screen -->
+    <string name="main_settings">설정</string>
+    <string name="main_add_pc">PC 추가</string>
+    <string name="main_empty_title">등록된 프로필이 없습니다</string>
+    <string name="main_empty_desc">먼저 프로필(집)을 추가하세요.</string>
+    <string name="main_empty_action">프로필 추가</string>
+    <string name="main_no_pc">이 프로필에 등록된 PC가 없습니다.</string>
+    <string name="main_wake">켜기</string>
+    <string name="profile_add">프로필 추가</string>
+    <string name="profile_menu_edit">프로필 수정</string>
+    <string name="profile_menu_delete">프로필 삭제</string>
+    <string name="pc_menu_edit">PC 수정</string>
+    <string name="pc_menu_delete">PC 삭제</string>
+
+    <!-- Wake results (toasts) -->
+    <string name="wake_sending">매직패킷 전송 중…</string>
+    <string name="wake_success">매직패킷을 보냈습니다</string>
+    <string name="wake_fail_unreachable">Pico W에 연결할 수 없습니다</string>
+    <string name="wake_fail_auth">인증 실패 (비밀키/시각 확인)</string>
+    <string name="wake_fail_timeout">응답 시간 초과</string>
+    <string name="wake_fail_generic">전송 실패</string>
+    <string name="wake_fail_noprofile">프로필을 찾을 수 없습니다</string>
+    <string name="wake_fail_nopc">PC를 찾을 수 없습니다</string>
+
+    <!-- Profile edit -->
+    <string name="profile_edit_title_new">프로필 추가</string>
+    <string name="profile_edit_title_edit">프로필 수정</string>
+    <string name="profile_alias">별칭</string>
+    <string name="profile_alias_hint">예: 집</string>
+    <string name="profile_internal_host">내부 주소 (집 Wi-Fi)</string>
+    <string name="profile_internal_host_hint">예: 192.168.35.50</string>
+    <string name="profile_external_host">외부 주소 (DDNS)</string>
+    <string name="profile_external_host_hint">예: myhome.duckdns.org</string>
+    <string name="profile_external_port">외부 포트</string>
+    <string name="profile_external_port_hint">예: 18080</string>
+    <string name="profile_secret">비밀키 (HMAC 공유키)</string>
+    <string name="profile_secret_regenerate">새로 생성</string>
+    <string name="profile_secret_copy">복사</string>
+    <string name="profile_secret_copied">비밀키를 복사했습니다. Pico W의 config.json에 붙여넣으세요.</string>
+    <string name="profile_secret_help">이 값을 Pico W config.json의 secret에 그대로 붙여넣으세요.</string>
+    <string name="profile_test">연결 테스트</string>
+    <string name="profile_test_internal">내부</string>
+    <string name="profile_test_external">외부</string>
+    <string name="profile_test_running">테스트 중…</string>
+    <string name="profile_test_ok">성공 · %1$d ms · fw %2$s</string>
+    <string name="profile_test_fail">실패</string>
+    <string name="profile_test_untested">미확인</string>
+    <string name="profile_error_alias">별칭을 입력하세요</string>
+    <string name="profile_error_host">내부 또는 외부 주소를 입력하세요</string>
+    <string name="profile_error_port">포트는 1–65535 범위여야 합니다</string>
+
+    <!-- PC edit -->
+    <string name="pc_edit_title_new">PC 추가</string>
+    <string name="pc_edit_title_edit">PC 수정</string>
+    <string name="pc_alias">별칭</string>
+    <string name="pc_alias_hint">예: 작업PC</string>
+    <string name="pc_mac">MAC 주소</string>
+    <string name="pc_mac_hint">예: AA:BB:CC:DD:EE:FF</string>
+    <string name="pc_error_alias">별칭을 입력하세요</string>
+    <string name="pc_error_mac">올바른 MAC 주소가 아닙니다</string>
+
+    <!-- Delete confirmations -->
+    <string name="delete_profile_title">프로필 삭제</string>
+    <string name="delete_profile_message">%1$s 프로필과 하위 PC %2$d대를 함께 삭제합니다. 계속할까요?</string>
+    <string name="delete_pc_title">PC 삭제</string>
+    <string name="delete_pc_message">%1$s를 삭제할까요?</string>
+
+    <!-- Confirm activity (widget tap) -->
+    <string name="confirm_message">%1$s를 켤까요?</string>
+    <string name="confirm_wake">켜기</string>
+
+    <!-- Settings -->
+    <string name="settings_title">설정</string>
+    <string name="settings_version">앱 버전</string>
+    <string name="settings_privacy_title">정보 미수집</string>
+    <string name="settings_privacy_body">이 앱은 어떤 정보도 외부로 전송하거나 수집하지 않습니다. 모든 데이터는 기기 안에만 저장됩니다.</string>
+    <string name="settings_export">정보 내보내기</string>
+    <string name="settings_export_desc">프로필·PC 설정을 파일로 백업합니다.</string>
+    <string name="settings_import">정보 가져오기</string>
+    <string name="settings_import_desc">백업 파일에서 설정을 복원합니다.</string>
+    <string name="settings_source_title">오픈소스</string>
+    <string name="settings_source_body">MagicTap은 오픈소스입니다. github.com/devbomu/MagicTap</string>
+
+    <!-- Export -->
+    <string name="export_warning_title">내보내기 주의</string>
+    <string name="export_warning_body">내보낸 파일에는 접속 주소와 비밀키가 포함됩니다. 타인에게 전달되지 않도록 주의하세요.</string>
+    <string name="export_mode_title">내보내기 방식</string>
+    <string name="export_mode_encrypted">암호화 내보내기 (권장)</string>
+    <string name="export_mode_encrypted_desc">입력한 암호로 파일을 암호화합니다. (PBKDF2 · AES-256-GCM)</string>
+    <string name="export_mode_nosecret">비밀키 제외 내보내기</string>
+    <string name="export_mode_nosecret_desc">구조만 백업합니다. 가져온 뒤 비밀키를 다시 입력하세요.</string>
+    <string name="export_mode_plain">평문 내보내기</string>
+    <string name="export_mode_plain_desc">암호화하지 않습니다. 권장하지 않습니다.</string>
+    <string name="export_password">암호</string>
+    <string name="export_password_confirm">암호 확인</string>
+    <string name="export_password_mismatch">암호가 일치하지 않습니다</string>
+    <string name="export_password_too_short">암호는 8자 이상이어야 합니다</string>
+    <string name="export_success">내보내기 완료</string>
+    <string name="export_fail">내보내기 실패: %1$s</string>
+
+    <!-- Import -->
+    <string name="import_password_title">암호 입력</string>
+    <string name="import_password_body">이 백업은 암호화되어 있습니다. 암호를 입력하세요.</string>
+    <string name="import_mode_title">가져오기 방식</string>
+    <string name="import_mode_merge">병합</string>
+    <string name="import_mode_merge_desc">기존 설정에 추가합니다.</string>
+    <string name="import_mode_overwrite">덮어쓰기</string>
+    <string name="import_mode_overwrite_desc">기존 설정을 모두 대체합니다.</string>
+    <string name="import_success">가져오기 완료 · 프로필 %1$d개</string>
+    <string name="import_fail">가져오기 실패: %1$s</string>
+    <string name="import_fail_password">암호가 올바르지 않거나 파일이 손상되었습니다</string>
+    <string name="import_fail_version">지원하지 않는 백업 버전입니다</string>
+    <string name="import_fail_parse">파일 형식을 인식할 수 없습니다</string>
+
+    <!-- Widgets -->
+    <string name="widget_list_label">MagicTap 목록</string>
+    <string name="widget_single_label">MagicTap 단일</string>
+    <string name="widget_list_desc">선택한 프로필의 PC 목록을 켜기 버튼으로 표시합니다.</string>
+    <string name="widget_single_desc">PC 하나를 한 번에 켭니다.</string>
+    <string name="widget_config_profile_title">프로필 선택</string>
+    <string name="widget_config_pc_title">PC 선택</string>
+    <string name="widget_config_none">먼저 앱에서 프로필과 PC를 등록하세요.</string>
+    <string name="widget_config_save">위젯 배치</string>
+    <string name="widget_not_configured">설정되지 않음</string>
+    <string name="widget_empty">PC 없음</string>
+    <string name="widget_open_app">앱 열기</string>
+
+    <!-- Connection test: secret verification -->
+    <string name="profile_test_secret_mismatch">연결됨 · secret 불일치</string>
+    <string name="profile_test_clock_error">연결됨 · Pico 시계 미동기화(NTP)</string>
+
+    <!-- Pico setup / config.json generation -->
+    <string name="profile_pico_setup">Pico 설정 파일 만들기</string>
+    <string name="pico_config_title">Pico 설정 생성</string>
+    <string name="pico_config_help">이 프로필의 secret과 아래 정보로 config.json을 만들어 내보냅니다. Wi-Fi·네트워크 값은 현재 연결 기준으로 자동 추천되며 필요 시 수정하세요.</string>
+    <string name="pico_wifi_ssid">Wi-Fi 이름 (SSID)</string>
+    <string name="pico_wifi_pass">Wi-Fi 비밀번호</string>
+    <string name="pico_static_ip">Pico 고정 IP</string>
+    <string name="pico_gateway">게이트웨이</string>
+    <string name="pico_subnet">서브넷 마스크</string>
+    <string name="pico_dns">DNS</string>
+    <string name="pico_dns_help">공유기 DNS는 Pico에서 안 될 수 있어 8.8.8.8(구글)을 기본값으로 둡니다. NTP·DuckDNS가 안 되면 이 값부터 확인하세요.</string>
+    <string name="pico_duckdns_domain">DuckDNS 도메인 (선택)</string>
+    <string name="pico_duckdns_token">DuckDNS 토큰 (선택)</string>
+    <string name="pico_secret_note">Secret은 이 프로필 값이 자동으로 포함됩니다.</string>
+    <string name="pico_export">config.json 내보내기</string>
+</resources>

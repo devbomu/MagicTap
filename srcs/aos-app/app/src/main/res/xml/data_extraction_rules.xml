@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Android 12+ (API 31) backup/transfer rules. Combined with
+    android:allowBackup="false", this keeps the encrypted store and the widget
+    preferences (which reference secrets) off cloud backups and out of
+    device-to-device transfers, so the HMAC secret can never leak that way.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" />
+        <exclude domain="sharedpref" />
+        <exclude domain="database" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="file" />
+        <exclude domain="sharedpref" />
+        <exclude domain="database" />
+    </device-transfer>
+</data-extraction-rules>

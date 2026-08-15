@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base window theme. The actual UI is drawn by Compose (see ui/theme);
+         this only styles the window before Compose takes over and the
+         config activities' window chrome. Platform parent avoids pulling in
+         the Material Components view library into a Compose-only app. -->
+    <style name="Theme.MagicTap" parent="@android:style/Theme.DeviceDefault.DayNight">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowBackground">@color/window_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <!-- Fully transparent, non-dimmed window for the widget confirm activity: the
+         Compose AlertDialog draws its own scrim and card on top of the home screen. -->
+    <style name="Theme.MagicTap.Confirm" parent="@android:style/Theme.DeviceDefault.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+</resources>

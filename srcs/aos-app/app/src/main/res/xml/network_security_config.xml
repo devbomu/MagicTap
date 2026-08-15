@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The Pico W speaks plain HTTP (running TLS on it is impractical, and the
+    payload is already protected by HMAC + timestamp + replay defence — see the
+    firmware security model). MagicTap only ever connects to hosts the user
+    typed in themselves: a private LAN IP (internal) and a DDNS domain (external).
+
+    Android's Network Security Config can whitelist domains but not private-IP
+    CIDR ranges, and the internal IP is user-configurable, so cleartext is
+    permitted at the base level. Every other protection (no data leaves the
+    device, HMAC auth) stands independently of transport encryption.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+
+    <!-- DDNS providers commonly used for the external address. -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">duckdns.org</domain>
+    </domain-config>
+</network-security-config>

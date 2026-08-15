@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- The ONLY permission MagicTap needs. No location, no storage, no analytics. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Read the phone's current gateway/subnet/DNS to pre-fill the Pico config generator. -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <application
+        android:name=".MagicTapApplication"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MagicTap">
+
+        <!-- Main app -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.MagicTap">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Translucent confirm dialog launched from a widget tap.
+             Not exported: only our own widgets' PendingIntents start it. -->
+        <activity
+            android:name=".widget.ConfirmActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@style/Theme.MagicTap.Confirm" />
+
+        <!-- ===== List widget ===== -->
+        <receiver
+            android:name=".widget.ListWidgetReceiver"
+            android:exported="false"
+            android:label="@string/widget_list_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_list_info" />
+        </receiver>
+
+        <activity
+            android:name=".widget.ListWidgetConfigActivity"
+            android:exported="true"
+            android:theme="@style/Theme.MagicTap">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <!-- ===== Single-icon widget ===== -->
+        <receiver
+            android:name=".widget.SingleWidgetReceiver"
+            android:exported="false"
+            android:label="@string/widget_single_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_single_info" />
+        </receiver>
+
+        <activity
+            android:name=".widget.SingleWidgetConfigActivity"
+            android:exported="true"
+            android:theme="@style/Theme.MagicTap">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>

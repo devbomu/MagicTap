@@ -1,0 +1,33 @@
+# ---- macOS ----
+.DS_Store
+
+# ---- Android / Gradle ----
+srcs/aos-app/.gradle/
+srcs/aos-app/build/
+srcs/aos-app/app/build/
+srcs/aos-app/captures/
+srcs/aos-app/local.properties
+srcs/aos-app/.idea/
+srcs/aos-app/*.iml
+srcs/aos-app/.kotlin/
+
+# ---- Keystores / signing (never commit) ----
+*.jks
+*.keystore
+keystore.properties
+
+# ---- Secrets (never commit real device config) ----
+srcs/backend-api/config.json
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# ---- MicroPython runtime (download from micropython.org — don't vendor the binary) ----
+*.uf2
+
+# ---- IDE ----
+.vscode/
+*.swp
