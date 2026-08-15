@@ -1,86 +1,88 @@
 # MagicTap
 
-> One tap on an Android home-screen widget powers on your PC — from anywhere, no cloud, no server.
+> 안드로이드 홈 화면 위젯을 한 번 눌러 PC를 켠다 — 집 안에서도, 밖에서도. 클라우드도, 서버도 없이.
 
-MagicTap is a personal **Wake-on-LAN (WOL)** system. An Android widget sends a signed HTTP request to a tiny always-on **Raspberry Pi Pico W** sitting on your home LAN, and the Pico W fires the magic packet locally. This sidesteps every reason WOL-from-outside normally fails (routers refusing broadcast port-forwarding, disappearing ARP entries, ISP router CAPTCHAs).
+MagicTap은 개인용 **Wake-on-LAN(WOL)** 시스템입니다. 안드로이드 위젯이 집 LAN에 상시 대기하는 소형 기기 **라즈베리 파이 Pico W**에 서명된 HTTP 요청을 보내면, Pico W가 LAN 내부에서 매직 패킷을 발사합니다. 이 구조는 외부 WOL이 흔히 실패하는 원인(공유기가 브로드캐스트 포트포워딩을 거부, 꺼진 PC의 ARP 엔트리 소멸, 통신사 공유기의 원격 WOL 페이지 캡차)을 모두 우회합니다.
 
-No backend server. No database. No account. No telemetry. Your data never leaves your phone.
+백엔드 서버 없음. 데이터베이스 없음. 계정 없음. 수집·전송 없음. 데이터는 기기 밖으로 나가지 않습니다.
 
 ```
- [ Outside ]                         [ Home LAN ]
+ [ 외부 ]                              [ 집 LAN ]
 
- ┌────────────┐   HTTP    ┌────────┐  port    ┌─────────┐
- │  Android   │ ────────► │ Router │ ───────► │ Pico W  │
- │ app/widget │           │  (NAT) │  forward │ (always │
- └────────────┘           └────────┘          │   on)   │
-                                              └────┬────┘
-                                    UDP broadcast  │  (magic packet)
-                                              ┌────▼────┐
-                                              │ Target  │
-                                              │   PC    │
-                                              └─────────┘
+ ┌────────────┐   HTTP     ┌────────┐   포트     ┌─────────┐
+ │  안드로이드 │ ─────────► │ 공유기  │ ────────► │ Pico W  │
+ │  앱 / 위젯  │            │ (NAT)  │  포워딩    │ (상시)  │
+ └────────────┘            └────────┘            └────┬────┘
+                                        UDP 브로드캐스트 │ (매직 패킷)
+                                                   ┌────▼────┐
+                                                   │  대상   │
+                                                   │   PC    │
+                                                   └─────────┘
 ```
 
-On home Wi-Fi the app talks to the Pico W directly (no router hairpin needed); outside it goes through a single port-forward. See [`docs/`](docs/) for the full design rationale (Korean).
+집 Wi-Fi 안에서는 공유기를 거치지 않고 앱이 Pico W에 직접 접속하고(공유기 헤어핀 불필요), 밖에서는 포트포워딩 1건을 거칩니다. 전체 설계 배경은 [`docs/`](docs/)의 기획서를 참고하세요.
 
-## Repository layout
+## 저장소 구성
 
-| Path | What it is | Stack |
+| 경로 | 내용 | 스택 |
 |---|---|---|
-| [`srcs/aos-app`](srcs/aos-app) | Android app + home-screen widgets | Kotlin · Jetpack Compose · Glance |
-| [`srcs/backend-api`](srcs/backend-api) | Pico W firmware (the "agent") | MicroPython |
-| [`docs`](docs) | Design document | — |
+| [`srcs/aos-app`](srcs/aos-app) | 안드로이드 앱 + 홈 화면 위젯 | Kotlin · Jetpack Compose · Glance |
+| [`srcs/backend-api`](srcs/backend-api) | Pico W 펌웨어(에이전트) | MicroPython |
+| [`docs`](docs) | 설계 기획서 | — |
 
-> **Why `backend-api` holds firmware, not a server:** the design deliberately has *no* backend server. The Pico W firmware fills the role the planning doc reserved for "a backend, if needed." The folder name is kept for continuity.
+> **`backend-api`에 서버가 아니라 펌웨어가 있는 이유:** 이 설계에는 백엔드 서버가 *없습니다*. Pico W 펌웨어가 기획서에서 "필요하다면 두려던 백엔드" 자리를 대신합니다. 폴더명은 연속성을 위해 유지합니다.
 
-## How it works
+## 동작 방식
 
-1. You register a **profile** (one home / one Pico W) and its **PCs** (by MAC address) in the app. Everything is stored encrypted on-device (Android Keystore, AES-256-GCM).
-2. Tapping a widget opens a small translucent confirm dialog — *not* the full app — to prevent accidental wakes.
-3. On confirm, the app signs `HMAC-SHA256(secret, "MAC|timestamp")` and `POST`s it to the Pico W:
-   - first to the **internal** address (300 ms timeout), then falling back to the **external** DDNS address.
-4. The Pico W verifies the signature, the ±60 s time window, and a replay ring-buffer, then broadcasts the magic packet to ports 9 and 7 (3× each).
+1. 앱에서 **프로필**(집 1곳 / Pico W 1대)과 그 아래 **PC**(MAC 주소로)를 등록합니다. 모든 정보는 기기 안에 암호화되어 저장됩니다(Android Keystore, AES-256-GCM).
+2. 위젯을 누르면 앱 본체가 아니라 작은 반투명 **확인 창**이 떠서 실수로 켜지는 것을 막습니다.
+3. 확인하면 앱이 `HMAC-SHA256(secret, "MAC|타임스탬프")`로 서명해 Pico W에 `POST`합니다.
+   - 먼저 **내부** 주소(300ms 타임아웃)를 시도하고, 실패하면 **외부** DDNS 주소로 폴백합니다.
+4. Pico W는 서명, ±60초 시각 창, 재전송 링버퍼를 검증한 뒤 매직 패킷을 포트 9·7에 각 3회 브로드캐스트합니다.
 
-Plaintext HTTP is safe here because the secret is never transmitted — only a one-time signature that can't be replayed. See [`srcs/backend-api/README.md`](srcs/backend-api/README.md#security-model) for the threat model.
+비밀키는 절대 전송되지 않고 재전송이 불가능한 일회성 서명만 오가므로 평문 HTTP로도 안전합니다. 위협 모델은 [`srcs/backend-api/README.md`](srcs/backend-api/README.md#보안-모델)를 참고하세요.
 
-## Quick start
+## 빠른 시작
 
-The order matters — **prove the Pico W wakes a PC before touching the app.** A single `curl` proves the whole path.
+순서가 중요합니다 — **앱을 건드리기 전에 Pico W가 PC를 실제로 깨우는지 먼저 증명하세요.** `curl` 한 줄로 전체 경로를 검증할 수 있습니다.
 
-1. **Physical prep** — router port-forward, target-PC BIOS/OS WOL settings, DuckDNS domain. Full checklist: [one-time setup](#one-time-physical-setup) below.
-2. **Flash the Pico W** — [`srcs/backend-api/README.md`](srcs/backend-api/README.md).
-3. **Build the app** — open [`srcs/aos-app`](srcs/aos-app) in Android Studio and run. [`srcs/aos-app/README.md`](srcs/aos-app/README.md).
+1. **물리 준비** — 공유기 포트포워딩, 대상 PC의 BIOS/OS WOL 설정, DuckDNS 도메인. 전체 체크리스트는 아래 [최초 1회 물리 설정](#최초-1회-물리-설정)을 참고하세요.
+2. **Pico W 굽기** — [`srcs/backend-api/README.md`](srcs/backend-api/README.md).
+3. **앱 빌드** — [`srcs/aos-app`](srcs/aos-app)를 Android Studio로 열어 실행. [`srcs/aos-app/README.md`](srcs/aos-app/README.md).
 
-## One-time physical setup
+> `config.json`은 손으로 작성하거나, **앱의 프로필 편집 화면에서 자동 생성·내보내기**할 수 있습니다(휴대폰의 Wi-Fi·네트워크 정보와 프로필 비밀키를 채워 줌).
 
-### Router (tested against SK Broadband, applies broadly)
-- [ ] Confirm the router is in **router mode** (AP/bridge mode can't port-forward — the most common failure).
-- [ ] Give the Pico W a **fixed IP** (DHCP reservation or static on the Pico W).
-- [ ] Add **one** port-forward: external port (e.g. `18080`) → `PicoW-IP:80`.
-- [ ] Make sure **AP isolation / guest network** is off for the Pico W's Wi-Fi.
+## 최초 1회 물리 설정
 
-### Target PC
-- [ ] BIOS/UEFI: enable *Resume by PCI-E / Network Device* (or equivalent).
-- [ ] Device Manager → NIC → Power Management → *Allow this device to wake the computer* + *Only allow a magic packet…*.
-- [ ] NIC Advanced tab: enable *Wake on Magic Packet*.
-- [ ] **Control Panel → Power Options → turn Fast Startup OFF** — with it on, WOL often fails from a full shutdown.
-- [ ] Prefer a **wired** connection (wireless WOL is unreliable).
+### 공유기
+- [ ] **라우터 모드**인지 확인(AP/브리지 모드는 포트포워딩 불가 — 가장 흔한 실패 원인).
+- [ ] Pico W에 **고정 IP** 부여(공유기 DHCP 고정 할당 또는 Pico W 측 static IP).
+- [ ] 포트포워딩 **1건** 추가: 외부 포트(예: `18080`) → `PicoW-IP:80`.
+- [ ] Pico W가 붙는 Wi-Fi의 **무선 격리 / 게스트 네트워크**가 꺼져 있는지 확인.
+- [ ] 이중 공유기(통신사 공유기 아래 개인 공유기) 환경이면, 바깥 공유기에서 안쪽 공유기로 포트포워딩(또는 DMZ)을 한 단계 더 걸어야 합니다.
+
+### 대상 PC
+- [ ] BIOS/UEFI: *Resume by PCI-E / Network Device*(또는 동등 항목) 활성화.
+- [ ] 장치 관리자 → 네트워크 어댑터 → 전원 관리 → *이 장치를 사용하여 컴퓨터의 대기 모드를 종료* + *매직 패킷에서만 종료*.
+- [ ] 어댑터 고급 탭: *Wake on Magic Packet* 활성화.
+- [ ] **제어판 → 전원 옵션 → 빠른 시작 끄기** — 켜져 있으면 완전 종료 상태에서 WOL이 자주 실패합니다.
+- [ ] **유선** 연결 권장(무선 WOL은 신뢰성이 낮음).
 
 ### Pico W
-- [ ] Flash MicroPython, upload the firmware + your `config.json`.
-- [ ] Keep it on USB power 24/7 (router USB port or a wall adapter — ~0.5 W).
+- [ ] MicroPython을 굽고, 펌웨어와 `config.json`을 업로드.
+- [ ] USB 전원 상시 연결(공유기 USB 포트 또는 벽 어댑터 — 약 0.5W).
 
-### External
-- [ ] Create a DuckDNS domain and token.
+### 외부
+- [ ] DuckDNS 도메인·토큰 발급.
 
-## Design principles
+## 설계 원칙
 
-- **Deterministic over convenient** — scoped to personal use so the network can be fixed and every feature works 100% of the time.
-- **No data collection** — `INTERNET` is the only permission; no location, no storage, no analytics.
-- **Fail loud, retry cheap** — no PC power-state monitoring; if a tap doesn't wake it, tap again.
+- **편의보다 결정론** — 개인 사용으로 범위를 좁혀 네트워크를 고정하고, 그 결과 모든 기능이 100% 동작합니다.
+- **정보 미수집** — 필요한 권한은 `INTERNET`과 `ACCESS_WIFI_STATE`(config 자동 생성용)뿐. 위치·저장소·분석 없음.
+- **크게 실패하고 싸게 재시도** — PC 전원 상태를 감시하지 않습니다. 한 번 눌러 안 켜지면 다시 누르면 됩니다.
 
-Explicitly **out of scope** (by design): PC auto-discovery, power-state monitoring, Play Store release, remote shutdown, iOS.
+**의도적으로 범위에서 제외**: PC 자동 검색, 전원 상태 모니터링, Play 스토어 출시, 원격 종료, iOS.
 
-## License
+## 라이선스
 
 [MIT](LICENSE) © 2026 devbomu
